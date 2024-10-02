@@ -1,36 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-
-interface AIModel {
-  id: string;
-  name: string;
-}
 
 function App() {
   const [query, setQuery] = useState('');
   const [inputLanguage, setInputLanguage] = useState('');
   const [outputLanguage, setOutputLanguage] = useState('');
-  const [aiModels, setAiModels] = useState<AIModel[]>([]);
-  const [selectedModel, setSelectedModel] = useState('');
   const [response, setResponse] = useState('');
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    // Fetch AI models from OpenRouter API
-    fetch('https://openrouter.ai/api/v1/models')
-      .then(response => response.json())
-      .then(data => {
-        const models = data.data.map((model: any) => ({
-          id: model.id,
-          name: model.name
-        }));
-        setAiModels(models);
-      })
-      .catch(error => {
-        console.error('Error fetching AI models:', error);
-        setError('Failed to fetch AI models. Please try again later.');
-      });
-  }, []);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setQuery(event.target.value);
@@ -44,16 +20,12 @@ function App() {
     setOutputLanguage(event.target.value);
   };
 
-  const handleModelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedModel(event.target.value);
-  };
-
   const handleSubmit = async () => {
     setError('');
     setResponse('');
 
-    if (!selectedModel || !query) {
-      setError('Please select an AI model and enter a query.');
+    if (!query) {
+      setError('Please enter a query.');
       return;
     }
 
@@ -67,7 +39,7 @@ function App() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          "model": selectedModel,
+          "model": "anthropic/claude-3.5-sonnet",
           "messages": [
             {
               "role": "user",
@@ -132,19 +104,6 @@ function App() {
                 ))}
               </select>
             </div>
-          </div>
-          <div className="model-select">
-            <label htmlFor="ai-model">AI Model:</label>
-            <select
-              id="ai-model"
-              value={selectedModel}
-              onChange={handleModelChange}
-            >
-              <option value="">Select AI model</option>
-              {aiModels.map(model => (
-                <option key={model.id} value={model.id}>{model.name}</option>
-              ))}
-            </select>
           </div>
         </div>
         <textarea

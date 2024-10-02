@@ -42,19 +42,19 @@ main {
   margin-bottom: 20px;
 }
 
-.language-select, .model-select {
+.language-select {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   width: 45%;
 }
 
-.language-select label, .model-select label {
+.language-select label {
   margin-bottom: 5px;
   font-weight: bold;
 }
 
-.language-select select, .model-select select {
+.language-select select {
   width: 100%;
   padding: 8px;
   font-size: 16px;
@@ -63,15 +63,10 @@ main {
   background-color: white;
 }
 
-.language-select select:focus, .model-select select:focus {
+.language-select select:focus {
   outline: none;
   border-color: #61dafb;
   box-shadow: 0 0 5px rgba(97, 218, 251, 0.5);
-}
-
-.model-select {
-  width: 100%;
-  max-width: 600px;
 }
 
 .language-input {
@@ -139,7 +134,7 @@ main {
     gap: 10px;
   }
 
-  .language-select, .model-select {
+  .language-select {
     width: 100%;
   }
 
