@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 type Tab = 'translation' | 'grammarCheck' | 'vocabularyExplanation' | 'usageExamples';
@@ -7,9 +7,10 @@ function App() {
   const [query, setQuery] = useState('');
   const [inputLanguage, setInputLanguage] = useState('');
   const [outputLanguage, setOutputLanguage] = useState('');
-  const [response, setResponse] = useState('');
+  const [streamingResponse, setStreamingResponse] = useState('');
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<Tab>('translation');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setQuery(event.target.value);
@@ -25,16 +26,18 @@ function App() {
 
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab);
-    setResponse('');
+    setStreamingResponse('');
     setError('');
   };
 
   const handleSubmit = async () => {
     setError('');
-    setResponse('');
+    setStreamingResponse('');
+    setIsLoading(true);
 
     if (!query) {
       setError('Please enter a query.');
+      setIsLoading(false);
       return;
     }
 
@@ -55,7 +58,7 @@ function App() {
     }
 
     try {
-      const result = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${process.env.REACT_APP_OPENROUTER_API_KEY}`,
@@ -70,19 +73,39 @@ function App() {
               "role": "user",
               "content": prompt
             }
-          ]
+          ],
+          "stream": true
         })
       });
 
-      if (!result.ok) {
+      if (!response.ok) {
         throw new Error('Failed to get response from OpenRouter API');
       }
 
-      const data = await result.json();
-      setResponse(data.choices[0].message.content);
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader!.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+        
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonData = JSON.parse(line.slice(6));
+            if (jsonData.choices && jsonData.choices[0].delta.content) {
+              setStreamingResponse(prev => prev + jsonData.choices[0].delta.content);
+            }
+          }
+        }
+      }
     } catch (error) {
       console.error('Error calling OpenRouter API:', error);
       setError('Failed to get response from AI. Please try again later.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -143,13 +166,15 @@ function App() {
             rows={5}
             className="language-input"
           />
-          <button onClick={handleSubmit} className="submit-button">Submit</button>
+          <button onClick={handleSubmit} className="submit-button" disabled={isLoading}>
+            {isLoading ? 'Processing...' : 'Submit'}
+          </button>
         </div>
         {error && <div className="error-message">{error}</div>}
-        {response && (
+        {streamingResponse && (
           <div className="response-container">
             <h2>AI Response:</h2>
-            <p>{response}</p>
+            <p className="streaming-response">{streamingResponse}</p>
           </div>
         )}
       </main>

@@ -118,8 +118,13 @@ main {
   transition: background-color 0.3s ease;
 }
 
-.submit-button:hover {
+.submit-button:hover:not(:disabled) {
   background-color: #4fa8d5;
+}
+
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 .submit-button:focus {
@@ -136,6 +141,7 @@ main {
 .response-container {
   margin-top: 20px;
   width: 100%;
+  max-width: 800px;
   background-color: #f0f0f0;
   border-radius: 5px;
   padding: 20px;
@@ -145,6 +151,24 @@ main {
 .response-container h2 {
   margin-top: 0;
   color: #282c34;
+}
+
+.streaming-response {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@keyframes blink {
+  0% { opacity: .2; }
+  20% { opacity: 1; }
+  100% { opacity: .2; }
+}
+
+.streaming-response::after {
+  content: '▋';
+  animation: blink 1s infinite;
 }
 
 @media (max-width: 600px) {
