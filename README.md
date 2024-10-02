@@ -1,65 +1,116 @@
 # InstantLingo: Real-time AI Language Assistant
 
-## Project Overview
-InstantLingo is a cutting-edge real-time AI language assistant designed to facilitate seamless communication across language barriers. This project aims to leverage advanced natural language processing and machine learning techniques to provide instant, accurate translations and language assistance.
+InstantLingo is a web-based application that leverages AI to provide real-time language assistance. It offers various language-related functions such as translation, grammar checking, vocabulary explanation, and usage examples.
 
-## Features (Planned)
-- Real-time text translation
-- Voice-to-text and text-to-voice capabilities
-- Multi-language support
-- Context-aware translations
-- Idiom and cultural reference explanations
+## Features
 
-## Project Structure
-The project is organized as follows:
-- `frontend/`: Contains the React application (created with Create React App and TypeScript)
-- `README.md`: This file, containing project information and setup instructions
+- Translation between multiple languages
+- Grammar checking and correction suggestions
+- Vocabulary explanations with definitions and context
+- Usage examples for words and phrases
+- Real-time AI-powered responses
+- User-friendly interface with tabbed functionality
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
+Before you begin, ensure you have met the following requirements:
+
 - Node.js (v14.0.0 or later)
 - npm (v6.0.0 or later)
+- An OpenRouter API key
 
-### Setup Instructions
+## Installation
+
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/InstantLingo-Real-time-AI-Language-Assistant.git
+   git clone https://github.com/your-username/InstantLingo-Real-time-AI-Language-Assistant.git
+   ```
+
+2. Navigate to the project directory:
+   ```
    cd InstantLingo-Real-time-AI-Language-Assistant
    ```
 
-2. Install dependencies for the frontend:
+3. Install the dependencies:
    ```
-   cd frontend
-   npm install
+   cd frontend && npm install
    ```
 
-3. Start the development server:
+## Setting up the Environment
+
+1. Obtain an API key from OpenRouter (https://openrouter.ai/).
+
+2. Set the API key as a system environment variable:
+
+   For Windows (Command Prompt, run as Administrator):
+   ```
+   setx REACT_APP_OPENROUTER_API_KEY "your_api_key_here" /M
+   ```
+
+   For macOS/Linux:
+   ```
+   echo "export REACT_APP_OPENROUTER_API_KEY=your_api_key_here" >> ~/.bash_profile
+   source ~/.bash_profile
+   ```
+
+   Replace `your_api_key_here` with your actual OpenRouter API key.
+
+3. Restart your terminal or command prompt for the changes to take effect.
+
+## Running the Application
+
+1. Navigate to the frontend directory:
+   ```
+   cd frontend
+   ```
+
+2. Start the development server:
    ```
    npm start
    ```
 
-4. Open your browser and navigate to `http://localhost:3000` to see the app running.
+3. Open your web browser and visit `http://localhost:3000` to use the application.
 
-## Development
-- The React app is located in the `frontend/` directory.
-- To add new features or modify existing ones, edit the files in `frontend/src/`.
-- To run tests: `npm test`
-- To create a production build: `npm run build`
+## Usage
+
+1. Select the desired function from the tabs: Translation, Grammar Check, Vocabulary Explanation, or Usage Examples.
+
+2. For translation, select the input and output languages from the dropdown menus.
+
+3. Enter your text in the input field.
+
+4. Click the "Submit" button to get the AI-generated response.
+
+5. The response will appear in real-time in the output area below.
+
+## Troubleshooting
+
+If you encounter any issues:
+
+1. Ensure that the API key is correctly set in your environment variables:
+   - Windows: `echo %REACT_APP_OPENROUTER_API_KEY%`
+   - macOS/Linux: `echo $REACT_APP_OPENROUTER_API_KEY`
+
+2. If the API key is not visible, try setting it again and restart your terminal.
+
+3. Check the browser console (F12) for any error messages.
+
+4. Verify that you have an active internet connection.
+
+5. Ensure that the OpenRouter API service is operational.
 
 ## Contributing
-We welcome contributions to the InstantLingo project. Please follow these steps to contribute:
-1. Fork the repository
-2. Create a new branch for your feature
-3. Commit your changes
-4. Push to your fork
-5. Create a pull request
+
+Contributions to InstantLingo are welcome. Please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch: `git checkout -b <branch_name>`.
+3. Make your changes and commit them: `git commit -m '<commit_message>'`
+4. Push to the original branch: `git push origin <project_name>/<location>`
+5. Create the pull request.
+
+Alternatively, see the GitHub documentation on [creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
 
 ## License
-[License information to be added]
 
-## Contact
-[Contact information to be added]
-
----
-This project is part of the ongoing effort to break down language barriers and foster global communication through innovative AI technologies.
+This project uses the following license: [MIT License](https://opensource.org/licenses/MIT).
