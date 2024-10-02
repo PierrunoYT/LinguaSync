@@ -68,16 +68,16 @@ function App() {
     let prompt = '';
     switch (activeTab) {
       case 'translation':
-        prompt = `Translate the following text from ${inputLanguage} to ${outputLanguage}: "${query}"`;
+        prompt = `Translate the following text from ${inputLanguage} to ${outputLanguage}. Provide only the translation without any explanations: "${query}"`;
         break;
       case 'grammarCheck':
-        prompt = `Check the grammar of the following text and provide corrections if needed: "${query}"`;
+        prompt = `Check the grammar of the following text and provide corrections if needed. Be concise and only point out errors: "${query}"`;
         break;
       case 'vocabularyExplanation':
-        prompt = `Explain the vocabulary used in the following text, providing definitions and context: "${query}"`;
+        prompt = `Explain the vocabulary used in the following text, providing brief definitions and context. List each word or phrase separately: "${query}"`;
         break;
       case 'usageExamples':
-        prompt = `Provide usage examples for the words or phrases in the following text: "${query}"`;
+        prompt = `Provide 2-3 brief usage examples for the key words or phrases in the following text. Format as a list: "${query}"`;
         break;
     }
 
@@ -99,7 +99,8 @@ function App() {
               "content": prompt
             }
           ],
-          "stream": true
+          "stream": true,
+          "max_tokens": 300
         })
       });
 
@@ -112,6 +113,7 @@ function App() {
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
+      let fullResponse = '';
 
       while (true) {
         const { done, value } = await reader!.read();
@@ -129,9 +131,8 @@ function App() {
               const jsonData = JSON.parse(line.slice(6));
               if (jsonData.choices && jsonData.choices[0].delta.content) {
                 const content = jsonData.choices[0].delta.content;
-                if (!content.includes('OPENROUTER PROCESSING')) {
-                  setStreamingResponse(prev => prev + content);
-                }
+                fullResponse += content;
+                setStreamingResponse(fullResponse);
               }
             } catch (parseError) {
               console.error('Error parsing streaming response:', parseError);
