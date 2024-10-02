@@ -121,7 +121,17 @@ function App() {
               }
             } catch (parseError) {
               console.error('Error parsing streaming response:', parseError);
+              console.log('Problematic line:', line);
+              // Attempt to extract content without parsing JSON
+              const content = line.slice(6).trim();
+              if (content && content !== '[DONE]') {
+                setStreamingResponse(prev => prev + content);
+              }
             }
+          } else if (line.trim() && line.trim() !== '[DONE]') {
+            // Handle non-JSON responses
+            console.log('Received non-JSON response:', line);
+            setStreamingResponse(prev => prev + line + '\n');
           }
         }
       }
