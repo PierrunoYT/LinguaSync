@@ -62,8 +62,8 @@ function App() {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${process.env.REACT_APP_OPENROUTER_API_KEY}`,
-          "HTTP-Referer": `${process.env.REACT_APP_SITE_URL}`,
-          "X-Title": `${process.env.REACT_APP_SITE_NAME}`,
+          "HTTP-Referer": `${window.location.href}`,
+          "X-Title": "InstantLingo",
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
