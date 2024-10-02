@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
 type Tab = 'translation' | 'grammarCheck' | 'vocabularyExplanation' | 'usageExamples';
@@ -23,6 +23,14 @@ function App() {
     }
   }, []);
 
+  const debounce = (func: (...args: any[]) => void, delay: number) => {
+    let timeoutId: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  };
+
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setQuery(event.target.value);
   };
@@ -41,13 +49,12 @@ function App() {
     setError('');
   };
 
-  const handleSubmit = async () => {
+  const processQuery = useCallback(async () => {
     setError('');
     setStreamingResponse('');
     setIsLoading(true);
 
     if (!query) {
-      setError('Please enter a query.');
       setIsLoading(false);
       return;
     }
@@ -145,7 +152,15 @@ function App() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [query, apiKey, activeTab, inputLanguage, outputLanguage]);
+
+  const debouncedProcessQuery = useCallback(debounce(processQuery, 1000), [processQuery]);
+
+  useEffect(() => {
+    if (query) {
+      debouncedProcessQuery();
+    }
+  }, [query, debouncedProcessQuery]);
 
   const languages = [
     'English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Russian', 'Chinese', 'Japanese', 'Korean'
@@ -204,10 +219,8 @@ function App() {
             rows={5}
             className="language-input"
           />
-          <button onClick={handleSubmit} className="submit-button" disabled={isLoading}>
-            {isLoading ? 'Processing...' : 'Submit'}
-          </button>
         </div>
+        {isLoading && <div className="loading-indicator">Processing...</div>}
         {error && <div className="error-message">{error}</div>}
         {streamingResponse && (
           <div className="response-container">

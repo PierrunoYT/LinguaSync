@@ -107,29 +107,10 @@ main {
   box-shadow: 0 0 5px rgba(97, 218, 251, 0.5);
 }
 
-.submit-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #61dafb;
-  color: #282c34;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submit-button:hover:not(:disabled) {
-  background-color: #4fa8d5;
-}
-
-.submit-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.submit-button:focus {
-  outline: none;
-  box-shadow: 0 0 5px rgba(97, 218, 251, 0.5);
+.loading-indicator {
+  font-size: 18px;
+  color: #61dafb;
+  margin-top: 10px;
 }
 
 .error-message {
@@ -156,19 +137,6 @@ main {
 .streaming-response {
   white-space: pre-wrap;
   word-break: break-word;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-@keyframes blink {
-  0% { opacity: .2; }
-  20% { opacity: 1; }
-  100% { opacity: .2; }
-}
-
-.streaming-response::after {
-  content: '▋';
-  animation: blink 1s infinite;
 }
 
 @media (max-width: 600px) {
@@ -187,10 +155,6 @@ main {
   }
 
   .language-select {
-    width: 100%;
-  }
-
-  .submit-button {
     width: 100%;
   }
 }
