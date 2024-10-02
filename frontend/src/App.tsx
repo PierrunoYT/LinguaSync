@@ -111,34 +111,32 @@ function App() {
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
+      let buffer = '';
 
       while (true) {
         const { done, value } = await reader!.read();
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-        
+        buffer += chunk;
+
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             try {
               const jsonData = JSON.parse(line.slice(6));
               if (jsonData.choices && jsonData.choices[0].delta.content) {
-                setStreamingResponse(prev => prev + jsonData.choices[0].delta.content);
+                const content = jsonData.choices[0].delta.content;
+                if (!content.includes('OPENROUTER PROCESSING')) {
+                  setStreamingResponse(prev => prev + content);
+                }
               }
             } catch (parseError) {
               console.error('Error parsing streaming response:', parseError);
               console.log('Problematic line:', line);
-              // Attempt to extract content without parsing JSON
-              const content = line.slice(6).trim();
-              if (content && content !== '[DONE]') {
-                setStreamingResponse(prev => prev + content);
-              }
             }
-          } else if (line.trim() && line.trim() !== '[DONE]') {
-            // Handle non-JSON responses
-            console.log('Received non-JSON response:', line);
-            setStreamingResponse(prev => prev + line + '\n');
           }
         }
       }
