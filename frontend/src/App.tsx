@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import './App.css';
 
+type Tab = 'translation' | 'grammarCheck' | 'vocabularyExplanation' | 'usageExamples';
+
 function App() {
   const [query, setQuery] = useState('');
   const [inputLanguage, setInputLanguage] = useState('');
   const [outputLanguage, setOutputLanguage] = useState('');
   const [response, setResponse] = useState('');
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState<Tab>('translation');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setQuery(event.target.value);
@@ -20,6 +23,12 @@ function App() {
     setOutputLanguage(event.target.value);
   };
 
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+    setResponse('');
+    setError('');
+  };
+
   const handleSubmit = async () => {
     setError('');
     setResponse('');
@@ -27,6 +36,22 @@ function App() {
     if (!query) {
       setError('Please enter a query.');
       return;
+    }
+
+    let prompt = '';
+    switch (activeTab) {
+      case 'translation':
+        prompt = `Translate the following text from ${inputLanguage} to ${outputLanguage}: "${query}"`;
+        break;
+      case 'grammarCheck':
+        prompt = `Check the grammar of the following text and provide corrections if needed: "${query}"`;
+        break;
+      case 'vocabularyExplanation':
+        prompt = `Explain the vocabulary used in the following text, providing definitions and context: "${query}"`;
+        break;
+      case 'usageExamples':
+        prompt = `Provide usage examples for the words or phrases in the following text: "${query}"`;
+        break;
     }
 
     try {
@@ -43,12 +68,7 @@ function App() {
           "messages": [
             {
               "role": "user",
-              "content": [
-                {
-                  "type": "text",
-                  "text": query
-                }
-              ]
+              "content": prompt
             }
           ]
         })
@@ -76,44 +96,55 @@ function App() {
         <h1>InstantLingo: Real-time AI Language Assistant</h1>
       </header>
       <main>
-        <div className="controls">
-          <div className="language-controls">
-            <div className="language-select">
-              <label htmlFor="input-language">Input Language:</label>
-              <select
-                id="input-language"
-                value={inputLanguage}
-                onChange={handleInputLanguageChange}
-              >
-                <option value="">Select language</option>
-                {languages.map(lang => (
-                  <option key={lang} value={lang}>{lang}</option>
-                ))}
-              </select>
-            </div>
-            <div className="language-select">
-              <label htmlFor="output-language">Output Language:</label>
-              <select
-                id="output-language"
-                value={outputLanguage}
-                onChange={handleOutputLanguageChange}
-              >
-                <option value="">Select language</option>
-                {languages.map(lang => (
-                  <option key={lang} value={lang}>{lang}</option>
-                ))}
-              </select>
-            </div>
-          </div>
+        <div className="tab-container">
+          <button className={`tab ${activeTab === 'translation' ? 'active' : ''}`} onClick={() => handleTabChange('translation')}>Translation</button>
+          <button className={`tab ${activeTab === 'grammarCheck' ? 'active' : ''}`} onClick={() => handleTabChange('grammarCheck')}>Grammar Check</button>
+          <button className={`tab ${activeTab === 'vocabularyExplanation' ? 'active' : ''}`} onClick={() => handleTabChange('vocabularyExplanation')}>Vocabulary Explanation</button>
+          <button className={`tab ${activeTab === 'usageExamples' ? 'active' : ''}`} onClick={() => handleTabChange('usageExamples')}>Usage Examples</button>
         </div>
-        <textarea
-          value={query}
-          onChange={handleInputChange}
-          placeholder="Enter your language query here..."
-          rows={5}
-          className="language-input"
-        />
-        <button onClick={handleSubmit} className="submit-button">Submit</button>
+        <div className="tab-content">
+          {activeTab === 'translation' && (
+            <div className="language-controls">
+              <div className="language-select">
+                <label htmlFor="input-language">Input Language:</label>
+                <select
+                  id="input-language"
+                  value={inputLanguage}
+                  onChange={handleInputLanguageChange}
+                >
+                  <option value="">Select language</option>
+                  {languages.map(lang => (
+                    <option key={lang} value={lang}>{lang}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="language-select">
+                <label htmlFor="output-language">Output Language:</label>
+                <select
+                  id="output-language"
+                  value={outputLanguage}
+                  onChange={handleOutputLanguageChange}
+                >
+                  <option value="">Select language</option>
+                  {languages.map(lang => (
+                    <option key={lang} value={lang}>{lang}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+          <textarea
+            value={query}
+            onChange={handleInputChange}
+            placeholder={`Enter your ${activeTab === 'translation' ? 'text to translate' : 
+                          activeTab === 'grammarCheck' ? 'text to check grammar' : 
+                          activeTab === 'vocabularyExplanation' ? 'text for vocabulary explanation' : 
+                          'text for usage examples'}...`}
+            rows={5}
+            className="language-input"
+          />
+          <button onClick={handleSubmit} className="submit-button">Submit</button>
+        </div>
         {error && <div className="error-message">{error}</div>}
         {response && (
           <div className="response-container">
