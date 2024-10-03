@@ -127,7 +127,6 @@ function App() {
               "content": prompt
             }
           ],
-          "stream": true,
           "max_tokens": 1000
         })
       });
@@ -138,42 +137,11 @@ function App() {
         throw new Error(`API response not OK: ${response.status} ${response.statusText}`);
       }
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let fullResponse = '';
-
-      while (true) {
-        const { done, value } = await reader!.read();
-        if (done) {
-          console.log('Stream complete');
-          break;
-        }
-
-        const chunk = decoder.decode(value);
-        buffer += chunk;
-
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const jsonData = JSON.parse(line.slice(6));
-              if (jsonData.choices && jsonData.choices[0].delta && jsonData.choices[0].delta.content) {
-                const content = jsonData.choices[0].delta.content;
-                fullResponse += content;
-                setStreamingResponse(fullResponse);
-              } else if (jsonData.choices && jsonData.choices[0].finish_reason === 'stop') {
-                console.log('Response finished');
-              }
-            } catch (parseError) {
-              console.error('Error parsing streaming response:', parseError);
-              console.log('Problematic line:', line);
-              // Continue processing other lines
-            }
-          }
-        }
+      const jsonResponse = await response.json();
+      if (jsonResponse.choices && jsonResponse.choices[0] && jsonResponse.choices[0].message) {
+        setStreamingResponse(jsonResponse.choices[0].message.content);
+      } else {
+        throw new Error('Unexpected response format from OpenRouter API');
       }
     } catch (error) {
       console.error('Error calling OpenRouter API:', error);
@@ -187,16 +155,16 @@ function App() {
     }
   }, [query, apiKey, activeTab, inputLanguage, outputLanguage]);
 
-  const debouncedProcessQuery = useCallback(debounce(processQuery, 5000), [processQuery]);
-
   useEffect(() => {
     if (query) {
-      debouncedProcessQuery();
+      const timeoutId = setTimeout(() => {
+        processQuery();
+      }, 1000);
+      return () => clearTimeout(timeoutId);
     } else {
       setStreamingResponse('');
-      setIsWaiting(false);
     }
-  }, [query, debouncedProcessQuery]);
+  }, [query, processQuery]);
 
   const languages = [
     'English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Russian', 'Chinese', 'Japanese', 'Korean'
@@ -266,8 +234,8 @@ function App() {
         {streamingResponse && (
           <div className="response-container">
             <h2>AI Response:</h2>
-            <div className="streaming-response-wrapper">
-              <p className="streaming-response">{streamingResponse}</p>
+            <div className="response-wrapper">
+              <p className="response">{streamingResponse}</p>
             </div>
           </div>
         )}

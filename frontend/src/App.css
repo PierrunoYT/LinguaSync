@@ -143,7 +143,7 @@ main {
   margin-bottom: 10px;
 }
 
-.streaming-response-wrapper {
+.response-wrapper {
   max-height: 300px;
   overflow-y: auto;
   border: 1px solid #ddd;
@@ -151,7 +151,7 @@ main {
   border-radius: 5px;
 }
 
-.streaming-response {
+.response {
   white-space: pre-wrap;
   word-break: break-word;
   font-size: 16px;
