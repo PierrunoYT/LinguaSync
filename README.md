@@ -1,6 +1,6 @@
-# InstantLingo: Real-time AI Language Assistant
+# LinguaSync: Real-time AI Language Assistant
 
-InstantLingo is a web-based application that leverages AI to provide real-time language assistance. It offers various language-related functions such as translation, grammar checking, vocabulary explanation, and usage examples.
+LinguaSync is a web-based application that leverages AI to provide real-time language assistance. It offers various language-related functions such as translation, grammar checking, vocabulary explanation, and usage examples.
 
 ## Features
 

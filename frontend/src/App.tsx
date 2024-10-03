@@ -116,7 +116,7 @@ function App() {
         headers: {
           "Authorization": `Bearer ${apiKey}`,
           "HTTP-Referer": `${window.location.href}`,
-          "X-Title": "InstantLingo",
+          "X-Title": "LinguaSync",
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -177,7 +177,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>InstantLingo: Real-time AI Language Assistant</h1>
+        <h1>LinguaSync: Real-time AI Language Assistant</h1>
       </header>
       <main>
         <div className="tab-container">
