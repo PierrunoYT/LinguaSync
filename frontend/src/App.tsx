@@ -227,6 +227,9 @@ function App() {
             rows={5}
             className="language-input"
           />
+          <button onClick={processQuery} className="submit-button" disabled={isLoading || !query.trim()}>
+            Submit
+          </button>
         </div>
         {isWaiting && <div className="waiting-indicator">Waiting for you to finish typing...</div>}
         {isLoading && <div className="loading-indicator">Processing...</div>}
