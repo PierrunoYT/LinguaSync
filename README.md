@@ -8,7 +8,7 @@ LinguaSync is an AI-powered web application for language assistance. It offers t
 - Grammar checking and correction suggestions
 - Vocabulary explanations with definitions and context
 - Usage examples for words and phrases
-- Real-time AI-powered responses
+- AI-powered responses
 - User-friendly interface with tabbed functionality
 
 ## Prerequisites
@@ -23,12 +23,12 @@ Before you begin, ensure you have met the following requirements:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/InstantLingo-Real-time-AI-Language-Assistant.git
+   git clone https://github.com/your-username/LinguaSync.git
    ```
 
 2. Navigate to the project directory:
    ```
-   cd InstantLingo-Real-time-AI-Language-Assistant
+   cd LinguaSync
    ```
 
 3. Install the dependencies:
@@ -81,7 +81,7 @@ Before you begin, ensure you have met the following requirements:
 
 4. Click the "Submit" button to get the AI-generated response.
 
-5. The response will appear in real-time in the output area below.
+5. The response will appear in the output area below.
 
 ## Troubleshooting
 
@@ -101,7 +101,7 @@ If you encounter any issues:
 
 ## Contributing
 
-Contributions to InstantLingo are welcome. Please follow these steps:
+Contributions to LinguaSync are welcome. Please follow these steps:
 
 1. Fork the repository.
 2. Create a new branch: `git checkout -b <branch_name>`.
@@ -113,4 +113,4 @@ Alternatively, see the GitHub documentation on [creating a pull request](https:/
 
 ## License
 
-This project uses the following license: [MIT License](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
