@@ -13,6 +13,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
   const [apiKey, setApiKey] = useState('');
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
     const key = process.env.REACT_APP_OPENROUTER_API_KEY;
@@ -22,7 +23,18 @@ function App() {
       console.error('OpenRouter API key is not set in environment variables');
       setError('API key is missing. Please set the REACT_APP_OPENROUTER_API_KEY environment variable.');
     }
+    setIsInitializing(false);
   }, []);
+
+  useEffect(() => {
+    if (!isInitializing) {
+      if (!apiKey) {
+        setError('API key is missing. Please set the REACT_APP_OPENROUTER_API_KEY environment variable.');
+      } else {
+        setError('');
+      }
+    }
+  }, [apiKey, isInitializing]);
 
   const debounce = (func: (...args: any[]) => void, delay: number) => {
     let timeoutId: NodeJS.Timeout;
@@ -189,6 +201,10 @@ function App() {
   const languages = [
     'English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Russian', 'Chinese', 'Japanese', 'Korean'
   ];
+
+  if (isInitializing) {
+    return <div className="App">Loading...</div>;
+  }
 
   return (
     <div className="App">
