@@ -11,6 +11,7 @@ function App() {
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<Tab>('translation');
   const [isLoading, setIsLoading] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
   const [apiKey, setApiKey] = useState('');
 
   useEffect(() => {
@@ -27,7 +28,11 @@ function App() {
     let timeoutId: NodeJS.Timeout;
     return (...args: any[]) => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func(...args), delay);
+      setIsWaiting(true);
+      timeoutId = setTimeout(() => {
+        setIsWaiting(false);
+        func(...args);
+      }, delay);
     };
   };
 
@@ -47,6 +52,7 @@ function App() {
     setActiveTab(tab);
     setStreamingResponse('');
     setError('');
+    setQuery(''); // Clear the query when switching tabs
   };
 
   const processQuery = useCallback(async () => {
@@ -74,7 +80,17 @@ function App() {
         prompt = `Check the grammar of the following text and provide corrections if needed. Be concise and only point out errors: "${query}"`;
         break;
       case 'vocabularyExplanation':
-        prompt = `Explain the vocabulary used in the following text, providing brief definitions and context. List each word or phrase separately: "${query}"`;
+        prompt = `Provide a comprehensive explanation of the following text: "${query}"
+
+        Your explanation should include:
+        1. An overall interpretation or meaning of the text.
+        2. Explanation of any challenging words, phrases, or idioms used in the text.
+        3. Any relevant cultural or contextual information that helps understand the text better.
+        4. If it's a single word, provide its definition, part of speech, and a few example sentences showing its usage in different contexts.
+        5. If it's a phrase or sentence, explain how the words work together to convey the meaning.
+        6. Mention any grammatical structures or language features that are notable in the text.
+
+        Please provide your explanation in a clear, easy-to-read format, using paragraphs or bullet points as appropriate.`;
         break;
       case 'usageExamples':
         prompt = `Provide 2-3 brief usage examples for the key words or phrases in the following text. Format as a list: "${query}"`;
@@ -100,7 +116,7 @@ function App() {
             }
           ],
           "stream": true,
-          "max_tokens": 300
+          "max_tokens": 1000
         })
       });
 
@@ -117,7 +133,10 @@ function App() {
 
       while (true) {
         const { done, value } = await reader!.read();
-        if (done) break;
+        if (done) {
+          console.log('Stream complete');
+          break;
+        }
 
         const chunk = decoder.decode(value);
         buffer += chunk;
@@ -129,14 +148,17 @@ function App() {
           if (line.startsWith('data: ')) {
             try {
               const jsonData = JSON.parse(line.slice(6));
-              if (jsonData.choices && jsonData.choices[0].delta.content) {
+              if (jsonData.choices && jsonData.choices[0].delta && jsonData.choices[0].delta.content) {
                 const content = jsonData.choices[0].delta.content;
                 fullResponse += content;
                 setStreamingResponse(fullResponse);
+              } else if (jsonData.choices && jsonData.choices[0].finish_reason === 'stop') {
+                console.log('Response finished');
               }
             } catch (parseError) {
               console.error('Error parsing streaming response:', parseError);
               console.log('Problematic line:', line);
+              // Continue processing other lines
             }
           }
         }
@@ -153,11 +175,14 @@ function App() {
     }
   }, [query, apiKey, activeTab, inputLanguage, outputLanguage]);
 
-  const debouncedProcessQuery = useCallback(debounce(processQuery, 1000), [processQuery]);
+  const debouncedProcessQuery = useCallback(debounce(processQuery, 5000), [processQuery]);
 
   useEffect(() => {
     if (query) {
       debouncedProcessQuery();
+    } else {
+      setStreamingResponse('');
+      setIsWaiting(false);
     }
   }, [query, debouncedProcessQuery]);
 
@@ -219,12 +244,15 @@ function App() {
             className="language-input"
           />
         </div>
+        {isWaiting && <div className="waiting-indicator">Waiting for you to finish typing...</div>}
         {isLoading && <div className="loading-indicator">Processing...</div>}
         {error && <div className="error-message">{error}</div>}
         {streamingResponse && (
           <div className="response-container">
             <h2>AI Response:</h2>
-            <p className="streaming-response">{streamingResponse}</p>
+            <div className="streaming-response-wrapper">
+              <p className="streaming-response">{streamingResponse}</p>
+            </div>
           </div>
         )}
       </main>
