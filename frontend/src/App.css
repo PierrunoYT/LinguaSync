@@ -114,6 +114,12 @@ main {
   margin-top: 10px;
 }
 
+.waiting-indicator {
+  font-size: 18px;
+  color: #ffa500;
+  margin-top: 10px;
+}
+
 .error-message {
   color: #ff6b6b;
   margin-top: 10px;
@@ -135,6 +141,14 @@ main {
   color: #282c34;
   font-size: 20px;
   margin-bottom: 10px;
+}
+
+.streaming-response-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .streaming-response {
