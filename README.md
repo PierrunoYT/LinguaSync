@@ -2,6 +2,8 @@
 
 LinguaSync is an AI-powered web application for language assistance. It offers translation, grammar checking, vocabulary explanation, and usage examples.
 
+Project repository: [https://github.com/PierrunoYT/LinguaSync](https://github.com/PierrunoYT/LinguaSync)
+
 ## Features
 
 - Translation between multiple languages
@@ -23,7 +25,7 @@ Before you begin, ensure you have met the following requirements:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/LinguaSync.git
+   git clone https://github.com/PierrunoYT/LinguaSync.git
    ```
 
 2. Navigate to the project directory:
