@@ -177,7 +177,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>LinguaSync: AI-Powered Language Assistant</h1>
+        <h1>LinguaSync</h1>
       </header>
       <main>
         <div className="tab-container">

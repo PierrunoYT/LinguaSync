@@ -1,6 +1,6 @@
-# LinguaSync: AI-Powered Language Assistant
+# LinguaSync
 
-LinguaSync is a web-based application that leverages AI to provide language assistance. It offers various language-related functions such as translation, grammar checking, vocabulary explanation, and usage examples.
+LinguaSync is an AI-powered web application for language assistance. It offers translation, grammar checking, vocabulary explanation, and usage examples.
 
 ## Features
 
